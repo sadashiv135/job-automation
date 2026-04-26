@@ -1,0 +1,6 @@
+.env
+__pycache__/
+resumes/
+cover_letters/
+jobs.xlsx
+settings.local.json
