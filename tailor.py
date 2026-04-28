@@ -9,7 +9,7 @@ load_dotenv()
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 RESUMES_DIR = Path(__file__).parent / "resumes"
-BASE_RESUME_PATH = Path(__file__).parent / "resume.docx"
+BASE_RESUME_PATH = Path(os.environ.get("RESUME_PATH", Path(__file__).parent / "resume.docx"))
 
 
 def _read_docx(path: Path) -> str:
@@ -30,6 +30,7 @@ def _write_docx(content: str, path: Path) -> None:
 
 def tailor_resume(job: dict) -> Path:
     """Tailor base resume to job description. Returns path to tailored .docx."""
+    os.makedirs(RESUMES_DIR, exist_ok=True)
     base_text = _read_docx(BASE_RESUME_PATH)
     jd = job["description"]
     company = _safe_filename(job["company"])

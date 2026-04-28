@@ -27,6 +27,18 @@ jobs:
       - name: Decode resume.docx from secret
         run: echo "${{ secrets.RESUME_DOCX_B64 }}" | base64 --decode > resume.docx
 
+      - name: Verify resume exists
+        run: |
+          ls -la resume.docx
+          python -c "
+          from docx import Document
+          doc = Document('resume.docx')
+          print('Resume loaded OK, paragraphs:', len(doc.paragraphs))
+          "
+
+      - name: Create output directories
+        run: mkdir -p resumes cover_letters
+
       - name: Run pipeline
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
