@@ -1,0 +1,46 @@
+name: Job Automation Pipeline
+
+on:
+  schedule:
+    # Every 2 hours, Mon–Fri, 8am–8pm CST (UTC-6)
+    # CST 8am=UTC 14:00, CST 8pm=UTC 02:00 next day
+    - cron: '0 14,16,18,20,22,0,2 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Decode resume.docx from secret
+        run: echo "${{ secrets.RESUME_DOCX_B64 }}" | base64 --decode > resume.docx
+
+      - name: Run pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+        run: python main.py
+
+      - name: Upload resumes and cover letters
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: job-documents-${{ github.run_id }}
+          path: |
+            resumes/
+            cover_letters/
+          retention-days: 7

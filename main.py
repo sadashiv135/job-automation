@@ -12,6 +12,7 @@ from tailor import tailor_resume
 from cover_letter import generate_cover_letter
 from scorer import score_match
 from logger import log_job
+from google_sheets import log_job_to_sheets
 
 BASE_RESUME = Path(__file__).parent / "resume.docx"
 
@@ -55,8 +56,17 @@ def _print_summary(stats: dict) -> None:
     if stats["errors"]:
         print(f"  Errors                        : {stats['errors']:>4}")
     print(div)
-    print(f"  Results saved → jobs.xlsx")
+    print(f"  Results saved → Google Sheets (+ jobs.xlsx fallback)")
     print(f"{div}\n")
+
+
+def _log(job, score, resume_path, cover_letter_path, status, reason=""):
+    """Try Google Sheets first; fall back to jobs.xlsx on any error."""
+    try:
+        log_job_to_sheets(job, score, resume_path, cover_letter_path, status, reason)
+    except Exception as e:
+        print(f"  [sheets] WARN: {e} — falling back to jobs.xlsx")
+        log_job(job, score, resume_path, cover_letter_path, status)
 
 
 def process_job(job: dict, stats: dict) -> None:
@@ -75,8 +85,8 @@ def process_job(job: dict, stats: dict) -> None:
 
     if visa_status == "Skipped - Citizenship Required":
         stats["visa_filtered"] += 1
-        log_job(job, score=0, resume_path=None, cover_letter_path=None,
-                status="Skipped (citizenship)")
+        _log(job, score=0, resume_path=None, cover_letter_path=None,
+             status="Skipped (citizenship)", reason="")
         print(f"  [visa]  SKIP  {title} @ {company}")
         return
 
@@ -87,14 +97,14 @@ def process_job(job: dict, stats: dict) -> None:
 
     if score < MIN_MATCH_SCORE:
         stats["low_score"] += 1
-        log_job(job, score, resume_path=None, cover_letter_path=None,
-                status="Skipped (low match)")
+        _log(job, score, resume_path=None, cover_letter_path=None,
+             status="Skipped (low match)", reason=reason)
         return
 
     # ── Tailor + cover letter ──────────────────────────────────────────────────
     resume_path = tailor_resume(job)
     cl_path     = generate_cover_letter(job)
-    log_job(job, score, resume_path, cl_path, status="To Apply")
+    _log(job, score, resume_path, cl_path, status="To Apply", reason=reason)
     stats["tailored"] += 1
     print(f"          → tailored: {resume_path.name}")
 

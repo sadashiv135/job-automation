@@ -60,18 +60,18 @@ def is_citizenship_required(description: str) -> bool:
 # ── Apify helpers ──────────────────────────────────────────────────────────────
 
 def _run_actor(url: str) -> list[dict]:
-    """Run the LinkedIn scraper actor for one search URL, hard-capped at 50 items."""
+    """Run the LinkedIn scraper actor for one search URL, hard-capped at 25 items."""
     client = ApifyClient(APIFY_TOKEN)
     run_input = {
         "urls": [url],
-        "maxResults": 50,
+        "maxResults": 25,
     }
     label = url.split("keywords=")[1].split("&")[0].replace("%20", " ")
     print(f"[scraper] Starting Apify run → '{label}' ...")
     run = client.actor(ACTOR_ID).call(run_input=run_input)
     items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
-    items = items[:50]   # hard cap — actor sometimes ignores maxResults
-    print(f"[scraper]   ✓ Run finished — {len(items)} items (capped at 50).")
+    items = items[:25]   # hard cap — actor sometimes ignores maxResults
+    print(f"[scraper]   ✓ Run finished — {len(items)} items (capped at 25).")
     return items
 
 
