@@ -2,9 +2,9 @@ name: Job Automation Pipeline
 
 on:
   schedule:
-    # Every 2 hours, Mon–Fri, 8am–8pm CST (UTC-6)
-    # CST 8am=UTC 14:00, CST 8pm=UTC 02:00 next day
-    - cron: '0 14,16,18,20,22,0,2 * * 1-5'
+    # Every 2 hours, Mon–Fri, 8am–8pm CDT (UTC-5)
+    # CDT 8am=UTC 13:00, 10am=15, 12pm=17, 2pm=19, 4pm=21, 6pm=23, 8pm=01
+    - cron: '0 13,15,17,19,21,23,1 * * 1-5'
   workflow_dispatch:
 
 jobs:
@@ -47,12 +47,3 @@ jobs:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
         run: python main.py
 
-      - name: Upload resumes and cover letters
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: job-documents-${{ github.run_id }}
-          path: |
-            resumes/
-            cover_letters/
-          retention-days: 7

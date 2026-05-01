@@ -13,6 +13,7 @@ from cover_letter import generate_cover_letter
 from scorer import score_match
 from logger import log_job
 from google_sheets import log_job_to_sheets
+import drive_upload
 
 BASE_RESUME = Path(__file__).parent / "resume.docx"
 
@@ -56,17 +57,30 @@ def _print_summary(stats: dict) -> None:
     if stats["errors"]:
         print(f"  Errors                        : {stats['errors']:>4}")
     print(div)
-    print(f"  Results saved → Google Sheets (+ jobs.xlsx fallback)")
+    print(f"  Results saved → Google Sheets  |  Files → Google Drive")
     print(f"{div}\n")
 
 
-def _log(job, score, resume_path, cover_letter_path, status, reason=""):
+def _upload_to_drive(path, file_type: str) -> str | None:
+    """Upload file to Drive; return URL, or fall back to local path string."""
+    if not path:
+        return None
+    try:
+        if file_type == "resume":
+            return drive_upload.upload_resume(path)
+        return drive_upload.upload_cover_letter(path)
+    except Exception as e:
+        print(f"  [drive] WARN: {e} — storing local path")
+        return str(path)
+
+
+def _log(job, score, resume_url, cover_letter_url, status, reason=""):
     """Try Google Sheets first; fall back to jobs.xlsx on any error."""
     try:
-        log_job_to_sheets(job, score, resume_path, cover_letter_path, status, reason)
+        log_job_to_sheets(job, score, resume_url, cover_letter_url, status, reason)
     except Exception as e:
         print(f"  [sheets] WARN: {e} — falling back to jobs.xlsx")
-        log_job(job, score, resume_path, cover_letter_path, status)
+        log_job(job, score, resume_url, cover_letter_url, status)
 
 
 def process_job(job: dict, stats: dict) -> None:
@@ -85,7 +99,7 @@ def process_job(job: dict, stats: dict) -> None:
 
     if visa_status == "Skipped - Citizenship Required":
         stats["visa_filtered"] += 1
-        _log(job, score=0, resume_path=None, cover_letter_path=None,
+        _log(job, score=0, resume_url=None, cover_letter_url=None,
              status="Skipped (citizenship)", reason="")
         print(f"  [visa]  SKIP  {title} @ {company}")
         return
@@ -97,14 +111,18 @@ def process_job(job: dict, stats: dict) -> None:
 
     if score < MIN_MATCH_SCORE:
         stats["low_score"] += 1
-        _log(job, score, resume_path=None, cover_letter_path=None,
+        _log(job, score, resume_url=None, cover_letter_url=None,
              status="Skipped (low match)", reason=reason)
         return
 
     # ── Tailor + cover letter ──────────────────────────────────────────────────
     resume_path = tailor_resume(job)
     cl_path     = generate_cover_letter(job)
-    _log(job, score, resume_path, cl_path, status="To Apply", reason=reason)
+
+    resume_url = _upload_to_drive(resume_path, "resume")
+    cl_url     = _upload_to_drive(cl_path, "cover_letter")
+
+    _log(job, score, resume_url, cl_url, status="To Apply", reason=reason)
     stats["tailored"] += 1
     print(f"          → tailored: {resume_path.name}")
 
