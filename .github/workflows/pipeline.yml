@@ -47,3 +47,13 @@ jobs:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
         run: python main.py
 
+      - name: Upload resumes and cover letters
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: job-applications-${{ github.run_id }}
+          path: |
+            resumes/
+            cover_letters/
+          retention-days: 30
+

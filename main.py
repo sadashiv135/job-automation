@@ -3,6 +3,7 @@ AI Job Application Automation Pipeline
 Run: python main.py
 """
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -13,7 +14,8 @@ from cover_letter import generate_cover_letter
 from scorer import score_match
 from logger import log_job
 from google_sheets import log_job_to_sheets
-import drive_upload
+
+_ON_GITHUB = bool(os.getenv("GITHUB_ACTIONS"))
 
 BASE_RESUME = Path(__file__).parent / "resume.docx"
 
@@ -61,17 +63,12 @@ def _print_summary(stats: dict) -> None:
     print(f"{div}\n")
 
 
-def _upload_to_drive(path, file_type: str) -> str | None:
-    """Upload file to Drive; return URL, or fall back to local path string."""
+def _file_link(path) -> str | None:
     if not path:
         return None
-    try:
-        if file_type == "resume":
-            return drive_upload.upload_resume(path)
-        return drive_upload.upload_cover_letter(path)
-    except Exception as e:
-        print(f"  [drive] WARN: {e} — storing local path")
-        return str(path)
+    if _ON_GITHUB:
+        return "See GitHub Actions artifacts"
+    return str(path)
 
 
 def _log(job, score, resume_url, cover_letter_url, status, reason=""):
@@ -119,8 +116,8 @@ def process_job(job: dict, stats: dict) -> None:
     resume_path = tailor_resume(job)
     cl_path     = generate_cover_letter(job)
 
-    resume_url = _upload_to_drive(resume_path, "resume")
-    cl_url     = _upload_to_drive(cl_path, "cover_letter")
+    resume_url = _file_link(resume_path)
+    cl_url     = _file_link(cl_path)
 
     _log(job, score, resume_url, cl_url, status="To Apply", reason=reason)
     stats["tailored"] += 1
