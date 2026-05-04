@@ -2,14 +2,16 @@ name: Job Automation Pipeline
 
 on:
   schedule:
-    # Every 2 hours, Mon–Fri, 8am–8pm CDT (UTC-5)
-    # CDT 8am=UTC 13:00, 10am=15, 12pm=17, 2pm=19, 4pm=21, 6pm=23, 8pm=01
-    - cron: '0 13,15,17,19,21,23,1 * * 1-5'
+    # Every 3 hours, Mon–Fri, 9am, 1pm, 5pm CDT (UTC-5)
+    # CDT 9am=UTC 14:00, 1pm=18:00, 5pm=22:00
+    - cron: '0 14,18,22 * * 1-5'
   workflow_dispatch:
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout code

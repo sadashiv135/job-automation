@@ -9,10 +9,10 @@ ACTOR_ID    = "curious_coder/linkedin-jobs-scraper"
 
 # LinkedIn search URLs — last 2 hours (f_TPR=r7200), Mid-Senior level (f_E=3), newest first
 LINKEDIN_URLS = [
-    "https://www.linkedin.com/jobs/search/?keywords=software%20engineer&location=United%20States&f_TPR=r86400&f_E=3&sortBy=DD",
-    "https://www.linkedin.com/jobs/search/?keywords=full%20stack%20engineer&location=United%20States&f_TPR=r86400&f_E=3&sortBy=DD",
-    "https://www.linkedin.com/jobs/search/?keywords=backend%20engineer&location=United%20States&f_TPR=r86400&f_E=3&sortBy=DD",
-    "https://www.linkedin.com/jobs/search/?keywords=data%20engineer&location=United%20States&f_TPR=r86400&f_E=3&sortBy=DD",
+    "https://www.linkedin.com/jobs/search/?keywords=software%20engineer&location=United%20States&f_TPR=r10800&f_E=3&sortBy=DD",
+    "https://www.linkedin.com/jobs/search/?keywords=full%20stack%20engineer&location=United%20States&f_TPR=r10800&f_E=3&sortBy=DD",
+    "https://www.linkedin.com/jobs/search/?keywords=backend%20engineer&location=United%20States&f_TPR=r10800&f_E=3&sortBy=DD",
+    "https://www.linkedin.com/jobs/search/?keywords=data%20engineer&location=United%20States&f_TPR=r10800&f_E=3&sortBy=DD",
 ]
 
 # ── Visa filter phrases ────────────────────────────────────────────────────────
