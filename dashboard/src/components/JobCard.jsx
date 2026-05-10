@@ -92,27 +92,27 @@ export default function JobCard({ job }) {
 
           <div className="card-actions">
             {job.applyUrl && job.applyUrl !== 'N/A' && (
-              <a
-                href={job.applyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
                 className="btn-apply"
-                onClick={e => e.stopPropagation()}
+                onClick={e => {
+                  e.stopPropagation()
+                  window.open(job.applyUrl, '_blank', 'noopener,noreferrer')
+                }}
               >
                 Apply Now →
-              </a>
+              </button>
             )}
             {job.resumeLink && job.resumeLink !== 'N/A' &&
              !job.resumeLink.startsWith('See GitHub') && (
-              <a
-                href={job.resumeLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
                 className="btn-secondary"
-                onClick={e => e.stopPropagation()}
+                onClick={e => {
+                  e.stopPropagation()
+                  window.open(job.resumeLink, '_blank', 'noopener,noreferrer')
+                }}
               >
                 Resume
-              </a>
+              </button>
             )}
           </div>
         </div>

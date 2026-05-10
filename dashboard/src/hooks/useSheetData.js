@@ -6,7 +6,7 @@ const API_KEY  = import.meta.env.VITE_SHEETS_API_KEY
 // Apply URL is stored as =HYPERLINK("url", "Apply Here") — extract the URL
 function extractUrl(cell) {
   if (!cell) return ''
-  const m = String(cell).match(/=HYPERLINK\("([^"]+)"/)
+  const m = String(cell).match(/=?HYPERLINK\("([^"]+)"/)
   return m ? m[1] : String(cell)
 }
 
