@@ -1,0 +1,193 @@
+.job-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.1s;
+  animation: fadeIn 0.2s ease;
+  overflow: hidden;
+}
+
+.job-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.job-card--expanded {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15), var(--shadow-md);
+}
+
+/* ── Card main row ───────────────────────────────────────── */
+.card-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+}
+
+/* ── Score circle ────────────────────────────────────────── */
+.score-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2.5px solid;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.score-num {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.score-pct {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* ── Card info ───────────────────────────────────────────── */
+.card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.job-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.company-name {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.meta-item {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg);
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+/* ── Expand arrow ────────────────────────────────────────── */
+.expand-arrow {
+  font-size: 10px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-top: 4px;
+  opacity: 0.5;
+}
+
+/* ── Expanded section ────────────────────────────────────── */
+.card-expanded {
+  border-top: 1px solid var(--border);
+  padding: 14px 16px;
+  animation: fadeIn 0.15s ease;
+}
+
+.match-reason {
+  margin-bottom: 14px;
+}
+
+.match-reason-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+.match-reason-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-apply {
+  display: inline-block;
+  padding: 8px 18px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.btn-apply:hover {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  display: inline-block;
+  padding: 8px 14px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.btn-secondary:hover {
+  background: var(--bg);
+}
+
+@media (max-width: 400px) {
+  .card-main {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .score-circle {
+    width: 48px;
+    height: 48px;
+  }
+
+  .score-num {
+    font-size: 14px;
+  }
+}

@@ -5,3 +5,6 @@ cover_letters/
 jobs.xlsx
 settings.local.json
 resume.docx
+dashboard/.env
+dashboard/node_modules/
+dashboard/dist/
